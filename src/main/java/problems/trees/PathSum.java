@@ -58,5 +58,27 @@ public class PathSum {
 
     }
 
+    public boolean isPathExists(TreeNode root, int[] path){
+        if(root == null){
+            return false;
+        }
+        return isPathExistsHelper(root,path,0);
+    }
+
+    private boolean isPathExistsHelper(TreeNode node, int[] path, int index) {
+        if(node == null){
+            return false;
+        }
+        if(node.val != path[index] || index >= path.length){
+            return false;
+        }
+        if(node.left == null && node.right == null && index == path.length-1){
+            return true;
+        }
+
+        return isPathExistsHelper(node.left,path,index+1)
+                || isPathExistsHelper(node.right,path,index+1);
+    }
+
 
 }
