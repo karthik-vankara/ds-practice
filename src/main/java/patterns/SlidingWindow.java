@@ -8,36 +8,37 @@ import java.util.*;
 public class SlidingWindow {
     public static void main(String[] args) {
         SlidingWindow slidingWindow = new SlidingWindow();
-//        System.out.println(slidingWindow.maxSumSubArray(new int[]{1, 4, 2, 10, 2, 3, 1, 0, 20},4));
-//        System.out.println(slidingWindow.longestSubstringLengthWithOutRepeatingChars("abcabcbb"));
+//        System.out.println(slidingWindow.maxSumSubArray(new int[]{10, -5, 20, -1, 5}, 3));
+//        System.out.println(slidingWindow.longestSubstringLengthWithOutRepeatingChars("pwwkew"));
 //        System.out.println(slidingWindow.longestUniqueSubstring("abcabcbb"));
 //        System.out.println(slidingWindow.minWindow("ddaaabbca","abc"));
-//        System.out.println(slidingWindow.maxSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3));
+//        System.out.println(Arrays.toString(slidingWindow.maxSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3)));
+        System.out.println(slidingWindow.checkInclusion("ab","eidbaooo"));
 //        System.out.println(slidingWindow.findAnagrams("abab", "ab"));
-        System.out.println(slidingWindow.findAnagramsOptimised("baa", "aa"));
+//        System.out.println(slidingWindow.findAnagramsOptimised("baa", "aa"));
     }
+
 
     //Given an array of integers and an integer k, find the maximum sum of any contiguous subarray of size k.
     //Constant window
+//    It finds the maximum sum of any subarray with a length less than or equal to k.
     public int maxSumSubArray(int[] arr, int k) {
         if (arr == null || arr.length == 0 || k < 1) {
             return -1;
         }
-        int left = 0, right = k - 1;
-        int maxSum = Integer.MIN_VALUE, windowSum = 0;
-        for (int i = 0; i < k; i++) {
-            windowSum += arr[i];
-        }
-        maxSum = windowSum;
-        while (right < arr.length - 1) {
-            windowSum -= arr[left];
-            left++;
-            right++;
+        int left = 0, right = 0;
+        int maxSum = Integer.MIN_VALUE;
+        int windowSum = 0;
+        while (right < arr.length) {
             windowSum += arr[right];
+            if (right - left + 1 > k) {
+                windowSum -= arr[left];
+                left++;
+            }
             maxSum = Math.max(windowSum, maxSum);
+            right++;
         }
-//        To print the indexes
-        System.out.println("indexes" + left + "," + right);
+        System.out.println("indexes" + left + ":" + right);
         return maxSum;
     }
 
@@ -62,25 +63,26 @@ public class SlidingWindow {
 //        return maxLength;
 
         int left = 0, right = 0;
-        int length = 0, maxLength = 0;
+        int maxLen = 0;
+        int windowLen = 0;
 
         int[] hash = new int[256];
-        for (int i = 0; i < hash.length; i++) {
-            hash[i] = -1;
-        }
         while (right < str.length()) {
-            if (hash[(int) str.charAt(right)] != -1) {
-                if (hash[(int) str.charAt(right)] >= left) {
-                    left = hash[(int) str.charAt(right)] + 1;
-                }
+            int rightCh = str.charAt(right);
+            hash[rightCh]++;
+
+            // Shrink window until all characters are unique
+            while (hash[rightCh] > 1) {
+                int leftCh = str.charAt(left);
+                hash[leftCh]--;
+                left++;
             }
-            length = right - left + 1;
-            maxLength = Math.max(length, maxLength);
-            hash[(int) str.charAt(right)] = right;
+            windowLen = right - left + 1;
+            maxLen = Math.max(windowLen, maxLen);
             right++;
         }
+        return maxLen;
 
-        return maxLength;
     }
 
     public String longestUniqueSubstring(String str) {
